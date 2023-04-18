@@ -15,9 +15,14 @@ import javafx.scene.shape.Box;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import javafx.util.StringConverter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends Application {
     private final ChoiceBox<Pair<String,String>> choiceBox = new ChoiceBox<>();
+    private final static Pair<String, String> EMPTY_PAIR = new Pair<>("", "");
 
     static {
         System.getProperties().put("javafx.pseudoClassOverrideEnabled", "true");
@@ -39,9 +44,23 @@ public class Main extends Application {
             System.out.println(">> saving");
         });
 
+        List<Pair<String,String>> cityOptions = new ArrayList<>();
+
         choiceBox.setPrefWidth(200);
-        choiceBox.setValue(new Pair<>("Sumy", "Sumy"));
-        choiceBox.setValue(new Pair<>("Kyiv", "Kyiv"));
+        cityOptions.add(new Pair<>("Sumy", "Sumy"));
+        cityOptions.add(new Pair<>("Kyiv", "Kyiv"));
+        choiceBox.setItems(cityOptions);
+
+        choiceBox.setConverter( new StringConverter<Pair<String,String>>() {
+            @Override
+            public String toString(Pair<String, String> pair) {
+                return pair.getKey();
+            }
+            @Override
+            public Pair<String, String> fromString(String string) {
+                return null;
+            }
+        });
 
         GridPane gridPane = new GridPane();
         gridPane.add(pane1, 0,0);
