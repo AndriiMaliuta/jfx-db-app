@@ -17,11 +17,13 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
 
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
-    private final ChoiceBox<Pair<String,String>> choiceBox = new ChoiceBox<>();
+    private final ChoiceBox<Pair<String, String>> choiceBox = new ChoiceBox<>();
     private final static Pair<String, String> EMPTY_PAIR = new Pair<>("", "");
 
     static {
@@ -41,39 +43,39 @@ public class Main extends Application {
         Label select1 = new Label("Select");
         Button save = new Button("Save");
         save.setOnAction(event -> {
-            System.out.println(">> saving");
+            try {
+                DbData dbData = new DbData();
+                DatabaseMetaData databaseMetaData = dbData.metaData(System.getenv("DB_URL"));
+                var schemas = databaseMetaData.getCatalogs();
+                while (schemas.next()) {
+                    System.out.println(schemas.getByte(0));
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         });
 
-        List<Pair<String,String>> cityOptions = new ArrayList<>();
+        List<Pair<String, String>> dbOptions = new ArrayList<>();
 
         choiceBox.setPrefWidth(200);
-        cityOptions.add(new Pair<>("Sumy", "Sumy"));
-        cityOptions.add(new Pair<>("Kyiv", "Kyiv"));
-        choiceBox.setItems(cityOptions);
-
-        choiceBox.setConverter( new StringConverter<Pair<String,String>>() {
-            @Override
-            public String toString(Pair<String, String> pair) {
-                return pair.getKey();
-            }
-            @Override
-            public Pair<String, String> fromString(String string) {
-                return null;
-            }
-        });
+        dbOptions.add(new Pair<>("Postgres", "Postgres"));
+        dbOptions.add(new Pair<>("MySQL", "MySQL"));
+        choiceBox.getItems().add(EMPTY_PAIR);
+        choiceBox.getItems().addAll(dbOptions);
 
         GridPane gridPane = new GridPane();
-        gridPane.add(pane1, 0,0);
-        gridPane.add(new Label("aa"), 0,1);
-        gridPane.add(new Label("bb"), 1,1);
-        gridPane.add(select1, 0,2);
-        gridPane.add(choiceBox, 1,2);
-        gridPane.add(save, 2,2);
+        gridPane.add(pane1, 0, 0);
+        gridPane.add(new Label("AAA"), 0, 1);
+        gridPane.add(new Label("BBB"), 1, 1);
+        gridPane.add(select1, 0, 2);
+        gridPane.add(choiceBox, 1, 2);
+        gridPane.add(save, 2, 2);
 
         HBox hbox = new HBox(gridPane);
         hbox.setAlignment(Pos.CENTER);
         hbox.setSpacing(10.0d);
-        hbox.setPadding( new Insets(40) );
+        hbox.setPadding(new Insets(40));
 
         return new Pane(hbox);
     }
