@@ -5,10 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Box;
@@ -39,18 +36,18 @@ public class Main extends Application {
         transform(box);
 
         Pane pane1 = new StackPane(box);
+        GridPane gridPane = new GridPane();
 
         Label select1 = new Label("Select");
         Button save = new Button("Save");
         save.setOnAction(event -> {
             try {
                 DbData dbData = new DbData();
-                DatabaseMetaData databaseMetaData = dbData.metaData(System.getenv("DB_URL"));
-                var schemas = databaseMetaData.getCatalogs();
-                while (schemas.next()) {
-                    System.out.println(schemas.getByte(0));
+                List<String> comments = dbData.comments();
+                for (int a = 5; a < 20; a++) {
+                    Label comm = new Label(comments.get(a));
+                    gridPane.add(comm, 0, a);
                 }
-
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -61,13 +58,11 @@ public class Main extends Application {
         choiceBox.setPrefWidth(200);
         dbOptions.add(new Pair<>("Postgres", "Postgres"));
         dbOptions.add(new Pair<>("MySQL", "MySQL"));
+        dbOptions.add(new Pair<>("Mongo", "Mongo"));
         choiceBox.getItems().add(EMPTY_PAIR);
         choiceBox.getItems().addAll(dbOptions);
 
-        GridPane gridPane = new GridPane();
         gridPane.add(pane1, 0, 0);
-        gridPane.add(new Label("AAA"), 0, 1);
-        gridPane.add(new Label("BBB"), 1, 1);
         gridPane.add(select1, 0, 2);
         gridPane.add(choiceBox, 1, 2);
         gridPane.add(save, 2, 2);
