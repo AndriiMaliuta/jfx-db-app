@@ -14,16 +14,26 @@ public class DbData {
         return metaData(url).getSchemas();
     }
 
-    public List<String> comments() throws SQLException {
+    public List<Comment> comments(int count) throws SQLException {
         Connection connection = DriverManager.getConnection(System.getenv("DB_URL"),
                 System.getenv("USER"),
                 System.getenv("PASS"));
-        PreparedStatement preparedStatement = connection.prepareStatement("select * from comments");
+        ArrayList<Comment> comments = new ArrayList<>();
+        PreparedStatement preparedStatement = connection.prepareStatement("select id, body, created_at from comments");
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<String> comments = new ArrayList<>();
+        int counter = 0;
         while (resultSet.next()) {
-            String comment = resultSet.getString(2);
-            comments.add(comment);
+            if (counter < count) {
+                System.out.println(resultSet.getArray(0));
+                long id = resultSet.getLong(0);
+                String body = resultSet.getString(1);
+                String date = resultSet.getString(2);
+                Comment comment = new Comment(id, date, body);
+                comments.add(comment);
+                counter++;
+            } else {
+                break;
+            }
         }
         connection.close();
         return comments;
