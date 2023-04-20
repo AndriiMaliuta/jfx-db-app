@@ -21,20 +21,18 @@ public class DbData {
         ArrayList<Comment> comments = new ArrayList<>();
         PreparedStatement preparedStatement = connection.prepareStatement("select id, body, created_at from comments");
         ResultSet resultSet = preparedStatement.executeQuery();
-        int counter = 0;
-        while (resultSet.next()) {
-            if (counter < count) {
-                System.out.println(resultSet.getArray(0));
-                long id = resultSet.getLong(0);
-                String body = resultSet.getString(1);
-                String date = resultSet.getString(2);
-                Comment comment = new Comment(id, date, body);
-                comments.add(comment);
-                counter++;
-            } else {
-                break;
-            }
+
+        for (int a = 0; a < count; a++) {
+            resultSet.next();
+
+            long id = resultSet.getLong(1);
+            String body = resultSet.getString(2);
+            String date = resultSet.getString(3);
+            Comment comment = new Comment(id, body, date);
+
+            comments.add(comment);
         }
+
         connection.close();
         return comments;
     }

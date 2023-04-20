@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -40,36 +41,38 @@ public class Main extends Application {
 //        transform(box);
 //        Pane pane1 = new StackPane(box);
 
-        
         GridPane gridPane = new GridPane();
 
-        Image mainImage = new Image(IMAGE_LOC, 360.0d, 360.0d, true, true );
+        Image mainImage = new Image(IMAGE_LOC, 360.0d, 360.0d, true, true);
 
         Label select1 = new Label("Select");
         Button save = new Button("Save");
+        TableView<Comment> tableView = new TableView<>();
+
         save.setOnAction(event -> {
             try {
                 DbData dbData = new DbData();
                 List<Comment> comments = dbData.comments(20);
 
-                TableView<Comment> tableView = new TableView<>();
+                tableView.setPrefWidth(800);
                 tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-                TableColumn<Comment, String> column1 = new TableColumn<>("ID");
-                TableColumn<Comment, String> column2 = new TableColumn<>("DATE");
-                TableColumn<Comment, String> column3 = new TableColumn<>("BODY");
+                TableColumn<Comment, String> column1 = new TableColumn<>("Id");
+                TableColumn<Comment, String> column2 = new TableColumn<>("Date");
+                TableColumn<Comment, String> column3 = new TableColumn<>("Body");
 
                 column1.setCellValueFactory(new PropertyValueFactory<>("id"));
                 column2.setCellValueFactory(new PropertyValueFactory<>("date"));
                 column3.setCellValueFactory(new PropertyValueFactory<>("body"));
 
                 comments.forEach(c -> {
+//                    System.out.println(c);
                     tableView.getItems().add(c);
                 });
 
                 tableView.getColumns().addAll(column1, column2, column3);
 
-                gridPane.add(tableView, 0, 6);
+//                gridPane.add(tableView, 0, 6);
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -86,15 +89,22 @@ public class Main extends Application {
         choiceBox.getItems().addAll(dbOptions);
 
         gridPane.add(select1, 0, 2);
-        gridPane.add(choiceBox, 1, 2);
-        gridPane.add(save, 2, 2);
+//        gridPane.add(choiceBox, 1, 2);
+//        gridPane.add(save, 2, 2);
 
-        HBox hbox = new HBox(gridPane);
-        hbox.setAlignment(Pos.CENTER);
-        hbox.setSpacing(10.0d);
-        hbox.setPadding(new Insets(40));
+        VBox vBox = new VBox(gridPane);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setSpacing(10.0d);
+        vBox.setPadding(new Insets(40));
 
-        return new Pane(hbox);
+        vBox.getChildren().addAll(
+                choiceBox,
+                save,
+                new Separator(),
+                tableView
+        );
+
+        return vBox;
     }
 
     private void transform(Rectangle box) {
@@ -106,9 +116,21 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         Scene scene = new Scene(createContent(), 1200, 900);
+        drawChart();
         stage.setTitle("My App");
         stage.setScene(scene);
         stage.show();
+    }
+
+    void drawChart() {
+        XYChart.Series<Double, Double> series = new XYChart.Series<>();
+        series.getData().add(new XYChart.Data<>(0.0, 0.0));
+        series.getData().add(new XYChart.Data<>(0.7, 0.5));
+        series.getData().add(new XYChart.Data<>(1.0, 0.632));
+        series.getData().add(new XYChart.Data<>(2.0, 0.865));
+        series.getData().add(new XYChart.Data<>(3.0, 0.95));
+        series.getData().add(new XYChart.Data<>(4.0, 0.982));
+        series.getData().add(new XYChart.Data<>(5.0, 0.993));
     }
 
 }

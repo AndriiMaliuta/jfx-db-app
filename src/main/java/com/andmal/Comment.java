@@ -7,6 +7,15 @@ public class Comment {
 
     public Comment(){}
 
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", body='" + body + '\'' +
+                ", date='" + date + '\'' +
+                '}';
+    }
+
     public Comment(long id, String body, String date) {
         this.id = id;
         this.body = body;
