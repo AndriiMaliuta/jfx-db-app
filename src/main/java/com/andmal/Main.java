@@ -1,6 +1,8 @@
 package com.andmal;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -93,6 +95,19 @@ public class Main extends Application {
 //        gridPane.add(save, 2, 2);
 
         VBox vBox = new VBox(gridPane);
+        VBox.setVgrow(tableView, Priority.ALWAYS);
+        VBox.setMargin(tableView, new Insets(10.0d));
+//        VBox.setMargin( tblCustomers, new Insets(0.0d, 10.0d, 10.0d, 10.0d) );
+//        VBox.setMargin( bottomControls, new Insets(10.0d) );
+        vBox.setBackground(
+                new Background(
+                        new BackgroundFill(
+                                Color.web("0xF2A444"),
+                                new CornerRadii(0), new Insets(0))
+                ));
+
+        ObservableList<String> priorities = FXCollections.observableArrayList("Medium", "High", "Low");
+
         vBox.setAlignment(Pos.CENTER);
         vBox.setSpacing(10.0d);
         vBox.setPadding(new Insets(40));
